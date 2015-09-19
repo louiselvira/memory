@@ -1,6 +1,7 @@
+/*
 * {
 	border: 1px solid red;
-}
+}*/
 
 h1 {
 	font-family: Verdana;
@@ -39,7 +40,7 @@ button:hover {
 
 #card-area {
 	float: right;
-	width: 43%;
+	width: 45%;
 	background-color: teal;
 	border-radius: 7px;
 	margin-top: 50px;

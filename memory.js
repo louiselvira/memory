@@ -12,65 +12,93 @@
 // var cards = []; //Holds the card objects. This is basically the game board.
 
 
-// //Constructor function for Card object:
-// var Card = function(x, y, motif) {
-// 	this.x = x;
-// 	this.y = y;
-// 	this.width = 100;
-// 	this.motif = motif;
-// 	isShown: false;
-// }
+ //Constructor function for Card object:
+ function Card (color) {
+	 this.color = color; //Give random color to card.
+	 this.isShown = false; //Turn card up side down by default.
+ }
 
 
 
 // ----- Functions: -----------------------------------------------------------------------------------
 
-$("button").click(function() {
-	console.log("Button clicked!");
-	$("#card-area").append("<div class='card'></div>");
-});
+//Generate a random color:
+function randomColor() {
+  function color() {
+    return Math.floor(Math.random()*256).toString(16)
+  }
+  return "#"+color()+color()+color();
+}
+
+//The Fisher–Yates shuffle:
+function shuffle(array) {
+	var m = array.length, t, i;
+	// While there remain elements to shuffle…
+	while (m) {
+		// Pick a remaining element…
+    	i = Math.floor(Math.random() * m--);
+			
+		// And swap it with the current element.
+    	t = array[m];
+    	array[m] = array[i];
+    	array[i] = t;
+  	}
+  	return array;
+}
+
+//Create a cards array to add to grid:
+function createCardsArray(gridSize) {
+	var cardsFirstHalf = [];
+	var cardsSecondHalf = [];
+	var colors = [];
+	//Generate he correct number of colors to put on cards. This is to avoid having to deep copy a whole array of card objects:
+	for (i = 0; i < gridSize/2; i++) {
+		colors.push(randomColor());
+	}
+	console.log(colors);
+	//Fill cardsFirstHalf with card objects, as many as half of gridSize. Each card object gets a color from the colors array.
+	for (i = 0; i < gridSize/2; i++) {
+		var cardColor = colors.splice([i], 1); //To get color, splice an element from colors array, making sure each color is only added once.
+		var card = new Card(cardColor[0]); //Since slice returns an array, add only the color value to the object.
+		cardsFirstHalf.push(card);
+	}
+	console.log(cardsFirstHalf);
+	//Duplicate the cardsFirstHalf array into cardsSecondHalf:
+	for (i = 0; i < gridSize/2; i++) {
+		var card = new Card(colors[i]);
+		cardsSecondHalf.push(card);
+	}
+	console.log(cardsSecondHalf);
+	//Combine the two arrays into the cardsCombined array:
+	var cardsCombined = cardsFirstHalf.concat(cardsSecondHalf);
+	console.log(cardsCombined);
 	
+	//Shuffle the cardsCombined array using the Fisher–Yates shuffle:
+	shuffle(cardsCombined);
+	console.log(cardsCombined);
+}
 
-
-// //Pick motifs from the motifs array, half as many as the desired gridSize, and pair the motifs in a new array:
-// function createMotifArray() {
-// 	//Loop through the motifs array the same number of times as half the gridSize.
-
-// 	//Assign each motif to a pos in this array (selectedMotifs)
-
-// 	//Create a new array which loops through selectedMotifs two times, adding 2 of each of the motifs.
-
-// 	//Shuffle the new array (shuffledMotifs):
-
-// 	//Return shuffledMotifs.
-// }
-
-
-
-// //Generate cards:
-// function generateCards(gridSize) {
-// 	//Check if amount is an even number:
-// 	if (gridSize % 2 === 0) {
-// 		//Split amount into 2 and place in the cols and rows variables:
-// 		var cols = gridSize / 2;
-// 		var rows = gridSize / 2;
-
-// 		//Generate columns with Card objects:
-// 		for (i = 0; i < cols; i++) {
-// 			//Generate rows of Card objects:
-// 			for (j = 0; j < rows; j++) {
-// 				//Push a new Card object to the current place in the cards array:
-// 				cards.push(new Card(i, j, shuffledMotifs.pop())); //Assign each new cards a col and row position and pops motifs from the randomMotifs array.
-// 			}
-// 		}
-// 	}
-// 	else {
-// 		console.log("Amount must be an even number.");
-// 	}
-
-
-
-
+//Start new game:
+$("#submit-button").click(function() {
+	var gridSize = document.getElementById("gridSize").value; //Get requested gridSize from input field.
+	if (gridSize % 2 === 0) { //Make sure gridSize is an even number.
+		//Run createCards function to get the cards array:
+ 		var cards = createCardsArray(gridSize);
+		console.log(cards);
+		//Create a div to hold a card:
+		var cardDiv = ""
+		//For each card in the array, add id and rest of html to the cardDiv:
+		for (i = 0; i < gridSize; i++) {
+			cardDiv += "<div class='card' id='"
+			cardDiv += cards[i].toString;
+			cardDiv += "'></div>"
+		}
+ 		$("#card-area").append(cardDiv); //Append cards to grid.
+ 	}
+	else {
+ 		console.log("Amount must be an even number."); //Odd number = no can do. 
+ 	}
+});
 
 
 
